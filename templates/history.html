@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Latest Analysis - AgroScan</title>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Bootstrap 5 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/css/style.css" />
+  </head>
+  <body>
+    <!-- Background Video -->
+    <div id="video-background">
+      <iframe
+        src="https://www.youtube.com/embed/kcfs1-ryKWE?autoplay=1&mute=1&controls=0&loop=1&playlist=kcfs1-ryKWE&showinfo=0&rel=0&iv_load_policy=3&disablekb=1"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top glass-nav">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <i
+            class="fas fa-leaf text-success me-2"
+            style="font-size: 1.5rem"
+          ></i>
+          <span>AgroScan</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/latest">Latest Analysis</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/contact">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+      <div class="container pb-5" style="padding-top: 100px">
+        <div class="row">
+          <!-- Full History Grid -->
+          <div class="col-12">
+            <div class="glass-container p-4">
+              <h4 class="text-white mb-4">
+                <i class="fas fa-history me-2"></i>Analysis History
+              </h4>
+
+              {% if history %}
+              <div class="row g-3">
+                {% for item in history %}
+                <div class="col-6 col-md-3">
+                  <div class="history-card">
+                    <a href="{{ url_for('result_page', scan_id=item.id) }}">
+                      <img
+                        src="{{item.imagepath}}"
+                        class="img-fluid rounded"
+                        alt="Scan thumbnail"
+                      />
+                      <div class="history-info">
+                        <span class="d-block text-truncate small fw-bold"
+                          >{{item.prediction['name']}}</span
+                        >
+                        <span class="small text-muted" style="font-size: 0.7rem"
+                          >{{item.timestamp}}</span
+                        >
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+
+              <!-- Pagination -->
+              {% if total_pages > 1 %}
+              <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination glass-pagination justify-content-center">
+                  <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                    <a
+                      class="page-link"
+                      href="{{ url_for('latest_analysis', page=page-1) }}"
+                    >
+                      <i class="fas fa-chevron-left"></i>
+                    </a>
+                  </li>
+                  <li class="page-item disabled">
+                    <span class="page-link"
+                      >Page {{ page }} of {{ total_pages }}</span
+                    >
+                  </li>
+                  <li
+                    class="page-item {% if page == total_pages %}disabled{% endif %}"
+                  >
+                    <a
+                      class="page-link"
+                      href="{{ url_for('latest_analysis', page=page+1) }}"
+                    >
+                      <i class="fas fa-chevron-right"></i>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+              {% endif %} {% else %}
+              <div class="text-center text-white-50 py-5">
+                <i class="fas fa-search fa-3x mb-3"></i>
+                <p>No analysis history found yet.</p>
+                <a href="/" class="btn btn-outline-light btn-sm mt-2"
+                  >Start a Scan</a
+                >
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

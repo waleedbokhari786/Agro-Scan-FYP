@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analysis Result - AgroScan</title>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Bootstrap 5 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/css/style.css" />
+  </head>
+  <body>
+    <!-- Background Video -->
+    <div id="video-background">
+      <iframe
+        src="https://www.youtube.com/embed/kcfs1-ryKWE?autoplay=1&mute=1&controls=0&loop=1&playlist=kcfs1-ryKWE&showinfo=0&rel=0&iv_load_policy=3&disablekb=1"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top glass-nav">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <i
+            class="fas fa-leaf text-success me-2"
+            style="font-size: 1.5rem"
+          ></i>
+          <span>AgroScan</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="/latest">Latest Analysis</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/contact">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main-container pt-5 mt-5">
+      <!-- Current Result Section -->
+      <section class="result-section container mb-5">
+        <h2 class="section-title text-center text-white mb-4">
+          Latest Analysis
+        </h2>
+        <div class="result-card glass-card row g-0 slide-up-anim mx-auto">
+          <div class="col-md-5 img-col">
+            <div class="result-image-wrapper">
+              <img
+                src="{{scan.imagepath}}"
+                alt="Analyzed Leaf"
+                class="img-fluid result-img"
+              />
+              <div class="status-badge valid">
+                <i class="fas fa-check-circle"></i> Complete
+              </div>
+            </div>
+          </div>
+          <div class="col-md-7 content-col p-4 p-md-5">
+            <h2 class="disease-name mb-4">{{scan.prediction['name']}}</h2>
+
+            <div class="info-group mb-3">
+              <div class="icon-box cause"><i class="fas fa-bug"></i></div>
+              <div class="info-text">
+                <h5>Cause</h5>
+                <p>{{scan.prediction['cause']}}</p>
+              </div>
+            </div>
+
+            <div class="info-group mb-3">
+              <div class="icon-box cure"><i class="fas fa-medkit"></i></div>
+              <div class="info-text">
+                <h5>Treatment</h5>
+                <p>{{scan.prediction['cure']}}</p>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <a href="/" class="btn btn-outline-light btn-sm"
+                ><i class="fas fa-arrow-left me-2"></i>Analyze Another</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- History Section -->
+      <section class="history-section container pb-5">
+        <div class="glass-container p-4">
+          <h3 class="text-white mb-4">
+            <i class="fas fa-history me-2"></i>Recent Scans
+          </h3>
+
+          <div class="row g-4 history-grid">
+            {% for item in history %}
+            <div class="col-6 col-md-3">
+              <div
+                class="history-card {% if item.id == scan_id %}active-scan{% endif %}"
+              >
+                <a href="{{ url_for('result_page', scan_id=item.id) }}">
+                  <img
+                    src="{{item.imagepath}}"
+                    class="img-fluid rounded"
+                    alt="Scan thumbnail"
+                  />
+                  <div class="history-info">
+                    <span class="d-block text-truncate small fw-bold"
+                      >{{item.prediction['name']}}</span
+                    >
+                    <span class="small text-muted" style="font-size: 0.7rem"
+                      >{{item.timestamp}}</span
+                    >
+                  </div>
+                </a>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Pagination -->
+          <nav aria-label="History navigation" class="mt-4">
+            <ul class="pagination justify-content-center glass-pagination">
+              <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                <a
+                  class="page-link"
+                  href="{{ url_for('result_page', scan_id=scan_id, page=page-1) }}"
+                  tabindex="-1"
+                  aria-disabled="true"
+                  >Previous</a
+                >
+              </li>
+
+              <li class="page-item disabled">
+                <span class="page-link">Page {{page}} of {{total_pages}}</span>
+              </li>
+
+              <li
+                class="page-item {% if page >= total_pages %}disabled{% endif %}"
+              >
+                <a
+                  class="page-link"
+                  href="{{ url_for('result_page', scan_id=scan_id, page=page+1) }}"
+                  >Next</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </section>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

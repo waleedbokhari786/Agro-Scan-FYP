@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+.env
+
+# Runtime data
+scans.json
+uploadimages/*
+!uploadimages/.gitkeep
+
+# Datasets
+*.zip
+dataset/
+
+# IDE / OS
+.vscode/
+.idea/
+.ipynb_checkpoints/
+Thumbs.db
+.DS_Store
